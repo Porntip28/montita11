@@ -1,0 +1,257 @@
+<?php
+// error_reporting(0);
+    session_start();
+    require 'connect.php';//ติดต่อฐานข้อมูล
+?>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <link rel="shortcut  icon" href="image/title.png">
+    <title>Ahamd Service</title>
+
+    <!-- เรียกใช้ icon fontawesome -->
+    <link rel="stylesheet"  href="bootstrap/css/brands.min.css" >
+    <link rel="stylesheet"  href="bootstrap/css/solid.min.css" >
+    <link rel="stylesheet"  href="bootstrap/css/regular.min.css" >
+    <link rel="stylesheet"  href="bootstrap/css/fontawesome.min.css" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- การแบ่งหน้า -->
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <script src="datatables/js/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="datatables/js/jquery.dataTables.min.js"></script>
+    <script src="datatables/js/dataTables.bootstrap.min.js"></script>
+    <link href="datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script >
+      $(document).ready(function() {
+      $('#mydata').dataTable();
+    } );
+    </script>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+          <style>
+      @import url('https://fonts.googleapis.com/css?family=Kanit');
+      *,h1,h2,h3,h4,h5,h6{
+        font-family: 'Kanit', sans-serif;
+        font-size: 18px;
+      }
+
+      
+      </style>
+
+<style>
+/* Style the sidenav links and the dropdown button */
+.sidenav a, .dropdown-btn {
+    padding: 6px 8px 6px 16px;
+
+    font-size: 18px;
+    color: black;
+    display: block;
+    background: none;
+    width: 100%;
+    text-align: left;
+    background : transparent !important;
+    border : 0.1px solid gray;
+}
+
+/* On mouse-over */
+.sidenav a:hover, .dropdown-btn:hover {
+    color: #818181;
+}
+.dropdown-container {
+    display: none;
+    background-color: white;
+    text-align: center;
+}
+
+body{
+  background-color: #FFFFFF;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  overflow-x:hidden;
+  /* e4d8b2; */
+  /* d8c894;  */
+  /* aecc9d */
+  /* a3af81 */
+}
+* {
+    box-sizing: border-box;
+}
+.header {
+    padding: 0px;
+
+}
+.menu {
+    width: 100%;
+    float: left;
+    padding: 0px;
+}
+.main {
+    width: 100%;
+    float: left;
+    padding: 0px;
+}
+#active{
+  background-color: #8B8989;
+}
+/* #active2{
+  background-color: #D3D3D3;
+} */
+
+</style>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"    style="
+    padding-top: 10px;
+    padding-bottom: 10px;">
+
+
+
+    <img src="image/ban_admin.png" class="img-fluid" width="100" height="100">
+
+
+      
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+          </li>
+
+        <?php if(isset($_SESSION['user']) && ($_SESSION['user']['level']==1 || $_SESSION['user']['level']==2)){ ?>
+            <li class="nav-item active">
+              <a class="nav-link" href="index_admin.php">ระบบจัดการ ฟาร์มหมูมณฑิตา</a>
+            </li>
+        <?php } ?>
+        </ul>
+        <!-- <form class="form-inline my-2 my-lg-0"> -->
+        <?php   include_once('login.php'); ?>
+
+      </div>
+    </nav>
+
+  
+
+<br>
+<br>
+        <br>
+        
+       
+<div class="col-4" style="margin-left:0px;">
+  <div class="container justify-content-start" style="margin-top:13px;padding-left: 0px;">
+  <div class="row justify-content-start">
+    <div class="col-sm-5 col-md-6"  style="
+    padding-left: 0px;">
+              <div class="list-group">
+                <a href="index.php" class="list-group-item list-group-item-action" id="active" <b style="color:black">หน้าหลัก</b></a>
+                <a href="index_admin.php?file=employee/index" class="list-group-item list-group-item-action">จัดการข้อมูลพนักงาน</a>
+                <a href="index.php?web=customer/customer" class="list-group-item list-group-item-action">จัดการข้อมูลลูกค้า</a>
+                <button class="dropdown-btn" >จัดการข้อมูลแพะ
+                  <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-container">
+                  <a href="index.php?web=goat/goat" class="list-group-item list-group-item-action">จัดการข้อมูลแพะ</a>
+                  <a href="index.php?web=category/category" class="list-group-item list-group-item-action">จัดการข้อมูลประเภทแพะ</a>
+                  <a href="index.php?web=ordergoat/ordergoat" class="list-group-item list-group-item-action ">จัดการข้อมูลการสั่งซื้อแพะ</a>
+
+                </div>
+                <!-- <a href="index.php?web=ordergoat/ordergoat" class="list-group-item list-group-item-action ">จัดการข้อมูลการสั่งซื้อแพะ</a> -->
+                <!-- <a href="index.php?web=orderfood/orderfood" class="list-group-item list-group-item-action ">จัดการข้อมูลการสั่งซื้ออาหาร</a> -->
+                <button class="dropdown-btn" >จัดการข้อมูลอาหาร
+                  <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-container">
+                  <a href="index.php?web=food/food" class="list-group-item list-group-item-action">ข้อมูลอาหาร</a>
+                  <a href="index.php?web=usefood/usefood" class="list-group-item list-group-item-action">จัดการข้อมูลการให้อาหาร</a>
+                  <a href="index.php?web=orderfood/orderfood" class="list-group-item list-group-item-action ">จัดการข้อมูลการสั่งซื้ออาหาร</a>
+                </div>
+                <!-- <a href="index.php?web=usefood/usefood" class="list-group-item list-group-item-action">จัดการข้อมูลการให้อาหาร</a> -->
+                <!-- <a href="index.php?web=ordermedicine/ordermedicine" class="list-group-item list-group-item-action">จัดการข้อมูลการสั่งซื้อยารักษาโรค</a> -->
+                <button class="dropdown-btn" >จัดการข้อมูลยารักษาโรค
+                <i class="fa fa-caret-down"></i>
+              </button>
+              <div class="dropdown-container">
+                <a href="index.php?web=medicine/medicine" class="list-group-item list-group-item-action">ข้อมูลยารักษาโรค</a>
+                <a href="index.php?web=usemedicine/usemedicine" class="list-group-item list-group-item-action">จัดการข้อมูลการให้ยารักษาโรค</a>
+              <a href="index.php?web=ordermedicine/ordermedicine" class="list-group-item list-group-item-action">จัดการข้อมูลการสั่งซื้อยารักษาโรค</a>
+            </div>
+                <!-- <a href="index.php?web=usemedicine/usemedicine" class="list-group-item list-group-item-action">จัดการข้อมูลการให้ยารักษาโรค</a> -->
+                <a href="index.php?web=sales/sales" class="list-group-item list-group-item-action">จัดการข้อมูลการขาย</a>
+                <a href="index.php?web=payment/payment" class="list-group-item list-group-item-action">จัดการข้อมูลการชำระเงิน</a>
+
+                <button class="dropdown-btn" >จัดการข้อมูลจัดส่ง
+                <i class="fa fa-caret-down"></i>
+              </button>
+              <div class="dropdown-container">
+                <a href="index.php?web=send/sendto" class="list-group-item list-group-item-action">รายการใหม่</a>
+                <a href="index.php?web=send/send" class="list-group-item list-group-item-action">ข้อมูลการจัดส่ง</a>
+
+                  </div>
+                <a href="index.php?web=salary/salary" class="list-group-item list-group-item-action">จัดการข้อมูลค่าตอบแทน</a>
+                <!-- <a href="index.php?web=account/account" class="list-group-item list-group-item-action ">จัดการข้อมูลบัญชีรายรับ-รายจ่าย</a> -->
+              </div>
+              </div>
+            </div>
+        <!-- <button type="button" class="list-group-item list-group-item-action" id="active">หน้าหลัก</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="employee"){echo "id='active2'";}?> onclick="location.href='"?file=employee/index"';">ข้อมูลพนักงาน</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="customer"){echo "id='active2'";}?> onclick="location.href='index.php?web=customer';">ข้อมูลลูกค้า</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="goat"){echo  "id='active2'";}?> onclick="location.href='index.php?web=goat';">ข้อมูลแพะ</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="category"){echo "id='active2'";}?> onclick="location.href='index.php?web=category';">ข้อมูลประเภทแพะ</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="ordergoat"){echo "id='active2'";}?> onclick="location.href='index.php?web=ordergoat';">ข้อมูลการสั่งซื้อแพะ</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="orderfood"){echo "id='active2'";}?> onclick="location.href='index.php?web=orderfood';">ข้อมูลการสั่งซื้ออาหาร</button>
+        <button type="button" class="list-group-item list-group-item-action" <?php if($_GET['web']=="usefood"){echo "id='active2'";}?> onclick="location.href='index.php?web=usefood';">ข้อมูลการให้อาหาร</button>
+        <button type="button" class="list-group-item list-group-item-action">ข้อมูลการสั่งซื้อยารักษาโรค</button>
+        <button type="button" class="list-group-item list-group-item-action">ข้อมูลการให้ยารักษาโรค</button>
+        <button type="button" class="list-group-item list-group-item-action">ข้อมูลการขาย</button>
+        <button type="button" class="list-group-item list-group-item-action">ข้อมูลการจัดส่ง</button>
+        <button type="button" class="list-group-item list-group-item-action">ข้อมูลบัญชีรายรับ-รายจ่าย</button> -->
+        </div>
+      </div>
+</div>
+</div>
+
+<div class="main" padding="20">
+  <?php
+    if(isset($_GET['web'])){
+       $app_file = 'src/'.$_GET['web'].'.php'; //$app_fileคือการกำหนดตัวแปรเพื่อรับไฟล์
+        if(is_file($app_file)){
+          include_once($app_file);
+        }else{
+          echo 'ไม่พบเนื้อหา 404';   //กรณีพาทไม่ตรงหรือไม่มีไฟล์นั้นจริง
+        }
+    }
+    // else{
+    //   include_once('index.php');
+    // }
+    ?>
+</div>
+
+<script>
+/* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.style.display === "block") {
+      dropdownContent.style.display = "none";
+    } else {
+      dropdownContent.style.display = "block";
+    }
+  });
+}
+</script>
+</bo

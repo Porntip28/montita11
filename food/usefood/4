@@ -1,0 +1,262 @@
+<?php
+$status_repair = 'status_repair.php';
+if(isset($_GET['id'])){
+
+
+if($query1->rowCount()>0){
+    $data = $query1->fetch(PDO::FETCH_ASSOC);
+  }
+}
+//================================================
+
+$query_food = $db->prepare("SELECT * FROM food ");
+$query_food->execute();
+$food = $query_food->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>เพิ่มข้อมูลการให้อาหาร</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">!-->
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- objecttom styles for this template -->
+    <link href="assets/css/dashboard.css" rel="stylesheet">
+  <style>
+
+  form{ margin-top: 40px;margin-left: 300px;}
+  ::-webkit-datetime-edit-text { color: red; padding: 0 0.3em; }
+  ::-webkit-inner-spin-button { display: none; }
+  ::-webkit-calendar-picker-indicator { background: orange; }
+  </style>
+  
+
+</head>
+
+<body>
+
+<div class="container font_article" style="font-size:16px;">
+<br><br>
+  <p class ="text-center font_article " style="font-size:40px;">เพิ่มข้อมูลการให้อาหาร</p>
+  <form action="?route=update" method="post" >
+
+    <?php $sql = "SELECT moo.*, stall.stall_name
+    FROM moo
+       INNER JOIN stall ON moo.stall_id = stall.stall_id ";
+      $query = $db->prepare($sql);
+      $query->execute();
+    ?>
+    <div class="form-group row">
+    <label class="col-sm-2 ">ชื่อสุกร :</label>
+    <div class="col-sm-10">
+      <select type="text" class="form-control form-control-sm border border-secondary"
+      style="width:250px; font-size:20px"  id="stall_id"  name="stall_id">
+      <option selected>-- เลือกชื่อสุกร --</option>
+        <?php while($row = $query->fetch(PDO::FETCH_OBJ)){ ?>
+         <option value="<?php echo $row->stall_id; ?>"><?php echo $row->stall_name?><?php echo $row->stall_name?></option>
+       <?php } ?>
+      </select>
+    </div>
+    </div>
+
+    <?php $sql = "SELECT * FROM food";
+      $query = $db->prepare($sql);
+      $query->execute();
+    ?>
+    <div class="form-group row">
+    <label class="col-sm-2 ">ชื่ออาหาร :</label>
+    <div class="col-sm-10">
+      <select type="text" class="form-control form-control-sm border border-secondary"
+      style="width:250px; font-size:20px"  id="food_id"  name="food_id">
+      <option selected>-- เลือกชื่ออาหาร --</option>
+        <?php while($row = $query->fetch(PDO::FETCH_OBJ)){ ?>
+          <script>
+          console.log("<?php echo $row->food_name ?>");
+          </script>
+         <option value="<?php echo $row->food_id; ?>"><?php echo $row->food_name?><?php echo $row->amount ?></option>
+       <?php } ?>
+      </select>
+    </div>
+    </div>
+  
+   <div class="form-group row ">
+   <label class="col-sm-2 " >จำนวน :</label>
+   <div class="col-sm-10">
+     <input type="number" class="form-control form-control-sm border border-secondary <?php if(isset($errors['amount']))
+     { echo " is-invalid";}?>" style="width:250px; font-size:20px" id="amount"  name="amount" value="<?= @$_POST['amount'] ?>" >
+     <div class="invalid-feedback"><?php if(isset($errors['amount'])){ echo $errors['amount'];}?></div>
+   </div>
+   </div>
+
+
+   <div class="form-group row">
+   <label class="col-sm-2 ">วันที่ผลิต :</label>
+   <div class="col-sm-10">
+     <input type="date" class="form-control-sm border border-secondary
+     <?php if(isset($errors['date_build'])){ echo " is-invalid";}?>"
+     style="font-size:20px;padding:0px;" id="date_build"  name="date_build" value="<?= @$_POST['date_build'] ?>" >
+     <div class="invalid-feedback"><?php if(isset($errors['date_build'])){ echo $errors['date_build'];}?></div>
+   </div>
+   </div>
+
+
+
+
+
+
+
+
+
+   <?php $sql = "SELECT * FROM staff";
+      $query = $db->prepare($sql);
+      $query->execute();
+     ?>
+    <div class="form-group row">
+    <label class="col-sm-2 ">ชื่อพนักงาน :</label>
+    <div class="col-sm-10">
+      <select type="text" class="form-control form-control-sm border border-secondary"
+      style="width:250px; font-size:20px"  id="staff_id"  name="staff_id" required>
+      <option selected>-- เลือกชื่อพนักงาน --</option>
+        <?php while($row = $query->fetch(PDO::FETCH_OBJ)){ ?>
+         <option value="<?php echo $row->id_staff; ?>"><?php echo $row->name_staff?></option>
+       <?php } ?>
+      </select>
+    </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-7 text-center ">
+        <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
+        <a href="?route=s_build" <button type ="cancle"class="btn btn-warning" >ยกเลิก</button> </a>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+</body>
+</html>
+
+<form method="post" action="">
+  <input type="hidden" name="moo_id" value="<?=$data["moo_id"]?>">
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label col-form-label-sm">วันที่ซ่อม</label>
+    <div class="col-3">
+      <input type="date" class="form-control form-control-sm"  name="use_date" value="<?=$data["use_date"]?>">
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label col-form-label-sm">สถานะการซ่อม</label>
+    <?php
+     if($data['status_use'] == 2){
+        echo "ซ่อมเสร็จแล้ว";
+     }elseif ($data['status_use'] == 0) {?>
+    <select class="form-form-control" name="status_use">
+        <option value="0">รอการให้</option>
+      
+        <option value="2">ให้เสร็จเเล้ว</option>
+      </select>
+   
+  <?php  } ?>
+  </div>
+<p></p>
+<center>
+  <?php  if($data['status_use'] == 0){ ?>
+    <div class="text-left">
+      เลือกอะไหล่
+    </div>
+    <p>
+  <table class="table table-striped table-bordered cart">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>รายการ</th>
+        <th>จำนวน</th>
+      </tr>
+    </thead>
+    <tbody>
+  <?php
+  $i=0;
+  foreach ($food as $key=> $value): ?>
+  <tr >
+      <td><?=++$i;?></td>
+      <input type="hidden" name="use_id" value="<?=$data["use_id"]?>">
+      <td><input type="checkbox" name="food_id[<?=$key?>]" value="<?=$value['food_id']?>">  <?=$value['food_name']?></td>
+      <td class=""><input type="number" value="['quantity']" min="1" class="quantity" name="quantity[<?=$key?>]"></td>
+  </tr>
+  <?php endforeach; ?>
+</table>
+<?php
+ }else {?>
+
+<?php }?>
+<button type="submit" class="btn btn-success" name='ok'>อัพเดท</button>
+
+<button type="button" class="btn btn-danger" onclick="window.location.href=' ?file=food/usefood/index';">ยกเลิก</button>
+</center>
+</form>
+
+<!--=======================================-->
+<?php
+if(isset($_POST['ok'])){
+  foreach($_POST['food_id'] as $key => $val){
+      $_SESSION['usefood'][$key]=[
+        'food_id' => $val,
+        'quantity' => $_POST['quantity'][$key]
+      ];
+  }
+  $status = $_POST['status_use'];
+  $use_id = $_REQUEST['id'];
+  $moo_id = $_POST['moo_id'];
+  $quantity = $_POST['quantity'];
+
+  //============================================
+ 
+//==================================================
+              if($result){
+                  foreach($_SESSION['usefood'] as $key=>$item){
+                    $query2 = $db->prepare("INSERT INTO detail_use_food (food_id, spare_id, quantity)
+                                           VALUES ( :repair_id, :spare_id, :quantity)");
+                    $result1 = $query2->execute([
+                      'repair_id'=>$repair_id,
+                      'spare_id'=>$item['spare_id'],
+                      'quantity'=>$item['quantity'],
+                      ]);
+                }
+}
+          //=======================update stock spare=======================
+            foreach ($_POST['spare_id'] as $key => $item) :
+              $query3 = $db->prepare("UPDATE spare SET
+              amount = amount - :quantity WHERE spare_id = :spare_id");
+
+              $result2 = $query3->execute([
+                'spare_id' => $_POST['spare_id'][$key],
+                'quantity' => $_POST['quantity'][$key],
+              ]);
+            endforeach;
+          unset($_SESSION['use_spare']);
+
+          //===================อัพเดทสถานะการซ่อม=========================
+
+          $status = $_POST['status_repair'];
+          $query4 = $db->prepare("UPDATE motorcycle SET
+          status_mo = :status_mo WHERE motor_id = :motor_id");
+
+          $result3 = $query4->execute([
+            'motor_id' => $motor_id,
+            'status_mo' => $status,
+
+          ]);
+          echo "<script>
+            alert('อัพเดทข้อมูลเรียบร้อยแล้ว');
+                window.location = '?file=insurance/repair/index';
+          </script>";
+   }
+ ?>
