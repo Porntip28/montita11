@@ -1,0 +1,91 @@
+<?php
+// $status = require('order_pill_status.php');
+$orderStatus = include 'order_status.php';
+if(isset($_GET['id'])){
+  $query = $db->prepare("SELECT  * FROM order_pill INNER JOIN user
+                                  ON order_pill.user_id = user.user_id
+                                  WHERE order_pill.order_pill_id=:id");
+  $query->execute([
+    'id'=>$_GET['id']
+  ]);
+
+  if($query->rowCount()>0){
+    $data = $query->fetch(PDO::FETCH_OBJ);
+  }
+ }
+
+?>
+<!-- <div id="print"> -->
+<br>
+  <div class="text-center">
+    <img src="image/title2.png" width="200" class="pull-left">
+    <h5>Montita Farme ฟาร์มหมูมณฑิตา</h5>
+    30 หมู่4 ต.หาดสำราญ อ.หาดสำราญ จ.ตรัง 92120
+    <br>
+    </div>
+<div class="row">
+<div class="col-sm-12">
+<table class="table ">
+  <tr><th class="text-right" width="20%">รหัสใบส่งซื้อยา :</th><td><?=$data->order_pill_id?></td></tr>
+  <tr><th class="text-right">ผู้สั่ง :</th><td><?=$data->name?> <?=$data->surname?> </td></tr>
+    <tr><th class="text-right">วันที่ :</th><td><?=date("d-m-Y", strtotime ($data->date_order_pill))?></td></tr>
+    <form class="" action="?file=pill/order_pill/history_order_pill" method="post">
+      <tr><th class="text-right">สถานะ : </th><td><?=$orderStatus[$data->order_status]?></td></tr>
+    </form>
+  </table>
+<?php
+  $query1 = $db->prepare("SELECT * FROM order_pill INNER JOIN detail_order_pill
+  ON detail_order_pill.order_pill_id = order_pill.order_pill_id
+  INNER JOIN pill ON pill.pill_id = detail_order_pill.pill_id
+  WHERE detail_order_pill.order_pill_id = :order_pill_id");
+$query1->execute([
+  'order_pill_id'=> $_GET['id'],
+]);
+if($query1->rowCount()>0){
+  $rows = $query1->fetchAll(PDO::FETCH_OBJ);
+}
+ ?>
+  <table class="table table-striped table-bordered cart">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>รายการ</th>
+        <th>ราคา</th>
+        <th>จำนวน</th>
+        <th>รวม</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      $i=0;
+      $total =0;
+      foreach($rows as $key=> $val):
+      $sum = $val->price*$val->quantity;
+      $total+=$sum;
+        ?>
+      <tr >
+          <td><?=++$i;?></td>
+          <td><?=$val->pill_name?></td>
+          <td ><?=number_format($val->price,2,'.',',');?></td>
+          <td><?=$val->quantity?></td>
+          <td ><?=number_format($sum,2,'.',',');?></td>
+      </tr>
+      <?php endforeach;?>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="text-right">
+            <b>รวมทั้งหมด</b>
+          </td>
+          <td><font color="red"><?=number_format($total,2,'.',',');?></font> <b>บาท<b></td>
+        </tr>
+      </tfoot>
+    </tbody>
+  </table>
+</div>
+</form>
+ </table>
+</div>
+<!-- </div> -->
+<p><a href="?file=pill/order_pill/history_order_pill" class="btn btn-info" role="button">กลับ</a>
+
+<!-- <center><button type="button" class="glyphicon glyphicon-print btn btn-white "  onClick=printDiv("print")> พิมพ์รายงาน</center> -->
