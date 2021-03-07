@@ -1,0 +1,143 @@
+
+<?php
+if(isset($_POST['ok'])){
+
+  $buyPrice = $_POST['buy_price'];
+  $salePrice = 0;
+
+  if($buyPrice >= 0 && $buyPrice <= 15000){
+    $salePrice = $buyPrice + 5000;
+  }elseif ($buyPrice >= 15001 && $buyPrice <= 30000) {
+    $salePrice = $buyPrice + 7000;
+  }elseif ($buyPrice >= 30001 && $buyPrice <= 50000){
+    $salePrice = $buyPrice + 10000;
+  }else {
+      $salePrice = $buyPrice + 12000;
+  }
+
+  $file= $_FILES['image']['name'];
+  $file_tmp_name = $_FILES['image']['tmp_name'];
+  $folder = "C:/xampp/htdocs/montitaa/mon/image/".$file;
+// print_r($_POST);
+// print_r($_FILES);
+if(move_uploaded_file($file_tmp_name,$folder)){
+    $query = $db->prepare("UPDATE moo SET
+                                moo_number = :moo_number,
+                                price_sale = :price_sale,
+                                image = :image,
+                                status_mo = :status_mo
+                                WHERE moo_id = :id");
+
+                  $result_mo = $query->execute([
+                  "id" => $_GET["id"],
+                  "moo_number" => $_POST["moo_number"],
+                  "price_sale" => $salePrice,
+                  "status_mo" => $_POST["repair"],
+                  "image" => $file,
+                    ]);
+    //=================================================
+        if($result_mo){
+            $query_tax = $db->prepare("INSERT INTO tax
+                            (moo_id, tax_begin, tax_end)
+                            VALUES (:moo_id ,:tax_begin, :tax_end)");
+                  $result_tax = $query_tax->execute([
+                  "moo_id" => $_GET["id"],
+                  "tax_begin" => 0,
+                  "tax_end" => 0,
+                    ]);
+}
+//============================== //insert ลงตารางซ่อมหากมีสถานะเป็น ซ่อม
+            if($result_mo){
+              if($_POST["detail"]){
+              $query_mo = $db->prepare("INSERT INTO repair
+                                        (moo_id, detail_repair, status_repair, repair_date)
+                                        VALUES (:moo_id ,:detail_repair, :status_repair, :repair_date)");
+                  $result_repair = $query_mo->execute([
+                  "moo_id" => $_GET["id"],
+                  "detail_repair" => $_POST["detail"],
+                  "status_repair" => 0,
+                  "repair_date" => 0,
+                    ]);
+                  }
+            }
+//=================================================================
+
+      echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว')
+      window.location = '?file=moo/mo/index';
+            </script>";
+  }else{
+      echo "<script>
+      alert('Save fail! '".$query->errorInfo()[2].");
+            </script>";
+          }
+    }
+
+      //ขั้น1========================================================
+if(isset($_GET['id'])){
+$query1 = $db->prepare("SELECT * FROM moo WHERE moo_id = :id");
+$query1->execute([
+'id'=>$_GET['id'],
+
+]);
+
+if($query1->rowCount()>0){
+    $data = $query1->fetch(PDO::FETCH_ASSOC);
+
+  }
+}
+?>
+<form method="post" enctype="multipart/form-data" action="">
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label col-form-label-sm">เลขทะเบียน</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control form-control-sm"  name="moo_number" value="<?=$data["motor_number"]?>">
+    </div>
+  </div>
+  <input type="hidden" name="buy_price" value="<?=$data["buy_price"]?>">
+
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label col-form-label-sm">รูป</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-file form-control-sm"  name="image" value="<?=$data["image"]?>">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label col-form-label-sm">ตรวจสอบสภาพรถ</label>
+    <div class="col-sm-10">
+    <div class="form-check">
+
+      <input type="radio" name="repair" value="1" data-target="motorrepair"  class="form-check-input repair" > ซ่อม <br>
+      <input type="text" name="detail" value="" style="display:none;"  placeholder="รายละเอียดที่ต้องซ่อม" class="form-control detailForm">
+
+      <input type="radio" name="repair" value="2" class="form-check-input"> ไม่ซ่อม<br>
+      <input type="radio" name="repair" value="0" class="form-check-input"> รอตรวจ
+    </div>
+    </div>
+  </div>
+
+<p></p>
+
+<center>
+<button type="submit" class="btn btn-success" name='ok'>บันทึก</button>
+<button type="button" class="btn btn-danger" onclick="window.location.href=' ?file=moo/motor/index';">ยกเลิก</button>
+</center>
+</form>
+<!--=================-->
+<script type="text/javascript">
+  $('.repair').change(function(){
+    var chk = $(this)
+    var inp = chk.closest('.form-check').find('.detailForm')
+    if(chk.is(':checked'))
+        inp.show();
+    else
+      inp.hide();
+  });
+
+  // $('.repair').change(function(){
+  // $('.detailForm').show() //Close all div.fabricFrom
+  // $('.detailForm').hide()
+  // //var s = $(this).val() //s=fabricOfShop or fabricOfOwn
+  // var s = $(this).data('target')
+  // $('#'+s).show('fast')
+// });
+  </script>
